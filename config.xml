@@ -11,6 +11,7 @@
   <description>CENP - Revista</description>
 
   <author email="programador@clarearpropaganda.com.br" href="http://clarearpropaganda.com.br">Clarear Propaganda</author>
+  <!--
   <preference name="SplashScreen" value="screen" />
   <preference name="ShowSplashScreenSpinner" value="false" />
   <preference name="AutoHideSplashScreen" value="true" />
@@ -88,7 +89,7 @@
   </platform>
   <access origin="file:///*" />
   <access origin="file:*" />
-  <!--
+  
   <preference name="target-device" value="universal" />
   <preference name="SuppressesIncrementalRendering" value="False" />
   <gap:plugin name="pushbots-cordova-plugin" source="npm" spec="^1.4.2" />
