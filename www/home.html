@@ -226,6 +226,10 @@
                                       window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dir) { dir.getDirectory($('.download:eq(' + key + ')').attr('id'), { create: false }, function (e) { $('.download:eq(' + key + ')').remove(); }, function (e) {  }); });
                                   });
                               }, 600);
+
+                              $('.revistas div.row').hide();
+                              $('.revistas div.row').eq(0).show();
+                              $('.revistas').append('<div class="row text-center" style="margin-bottom:10px"><a href="javascript:mostraEdicoes();">VER TODAS AS EDIÇÕES</a></div>');
                           })
                           .fail(function () {
 
@@ -247,14 +251,21 @@
                             //window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dir) { dir.getDirectory($('.download:eq(' + key + ')').attr('id'), { create: false }, function (e) { $('.download:eq(' + key + ')').remove(); }, function (e) { }); });
                             window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dir) { dir.getDirectory($('.download:eq(' + key + ')').attr('id'), { create: false }, function (e) { $('.download:eq(' + key + ')').remove(); }, function (e) {  }); });
                         });
-                        $('img.center-block').parent.hide();
-                        $('img.center-block').hide();
+                        //$('img.center-block').parent.hide();
+                        //$('img.center-block').hide();
                     }, 600);
-
+                    $('.revistas div.row').hide();
+                    $('.revistas div.row').eq(0).show();
+                    $('.revistas').append('<div class="row text-center" id="edicoes" style="margin-bottom:10px"><a href="javascript:mostraEdicoes();">VER TODAS AS EDIÇÕES</a></div>');
                 }
 
             }, 1300);
 
+        }
+
+        function mostraEdicoes() {
+            $('.revistas div.row').show();
+            $('.revistas div.row').last().hide();
         }
     </script>
 </body>
