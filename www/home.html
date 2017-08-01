@@ -96,34 +96,35 @@
             };
 
             ft.download(uri, downloadPath,
-            function (entry) {
-                $('.porcentagem' + id).remove();
-                //zip.unzip(<source zip>, <destination dir>, <callback>, [<progressCallback>]);
+                function (entry) {
+                    //$('.porcentagem' + id).remove();
+                    $('.porcentagem' + id).replaceWith('<a href="#" class="btn btn-primary delDownload" id="' + id + '" style="color:#FFF;margin-left:10px">Excluir<br>Download</a>');
+                    //zip.unzip(<source zip>, <destination dir>, <callback>, [<progressCallback>]);
 
-                window.setTimeout(function () {
+                    window.setTimeout(function () {
 
-                    zip.unzip(downloadPath, cordova.file.dataDirectory + id,
-                                function () {
-                                    var url = downloadPath;
-                                    window.resolveLocalFileSystemURL(url, function (file) {
-                                        window.setTimeout(function () {
-                                            file.remove(function () {
-                                                console.log(url + " deleted");
-                                            }, function () { console.log('ERRO AO APAGAR');});
-                                        }, 1000);
-                                    }, function () { });
-                        }, function () { });
-
-
-                }, 1000);
+                        zip.unzip(downloadPath, cordova.file.dataDirectory + id,
+                            function () {
+                                var url = downloadPath;
+                                window.resolveLocalFileSystemURL(url, function (file) {
+                                    window.setTimeout(function () {
+                                        file.remove(function () {
+                                            console.log(url + " deleted");
+                                        }, function () { console.log('ERRO AO APAGAR'); });
+                                    }, 1000);
+                                }, function () { });
+                            }, function () { });
 
 
+                    }, 1000);
 
-            },
-            function (error) {
-                navigator.notification.alert("Erro ao baixar essa edição. Tente novamente mais tarde.", null, "CENP Revista", "fechar");
-                $('span.porcentagem' + id).replaceWith('<a href="#" class="btn btn-primary download" id="' + id + '" style="color:#FFF;margin-left:10px">Download</a>');
-            });
+
+
+                },
+                function (error) {
+                    navigator.notification.alert("Erro ao baixar essa edição. Tente novamente mais tarde.", null, "CENP Revista", "fechar");
+                    $('span.porcentagem' + id).replaceWith('<a href="#" class="btn btn-primary download" id="' + id + '" style="color:#FFF;margin-left:10px">Download</a>');
+                });
         }
 
 
@@ -152,10 +153,55 @@
                 var id = $(this).attr('id');
                 var url = $(this).attr('href');
 
+                $(this).addClass('delDownload');
+                $(this).removeClass('download');
+                $(this).html('Excluir<br>Download');
+
                 downloadArquivo(id, url);
 
 
                 e.preventDefault();
+            });
+
+            $(document).on('click', '.delDownload', function (e) {
+                var id = $(this).attr('id');
+                //window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onFileReady, errorHandler);
+
+                //function onFileReady(fs) {
+                //    var dir = cordova.file.dataDirectory + $(this).attr('id');
+                //    fs.root.getDirectory(CachePath, {}, function (dir) {
+                //        alert(dirEntry);
+                //        dirEntry.removeRecursively(function () {
+                //            console.log('Directory removed.');
+                //            alert("Cached Maps Removed");
+                //        }, alert(1));
+
+                //}, alert(2));
+                //}
+                //$(this).addClass('download');
+                //$(this).removeClass('delDownload');
+                //$(this).html('download');
+
+
+                window.resolveLocalFileSystemURL(cordova.file.dataDirectory,
+                    function (dir) {
+                        dir.getDirectory(id, { create: false }, function (eDir) {
+                            //$('.download:eq(' + key + ')').html('excluir<br>download');
+                            //$('.download:eq(' + key + ')').addClass('delDownload'); $('.delDownload').removeClass('download');
+                            eDir.removeRecursively(function () {
+                                $('a#' + id).addClass('download');
+                                $('a#' + id).removeClass('delDownload');
+                                $('a#' + id).html('Download');
+                                alert('Edição removida com sucesso!');
+                            }, function () { });
+
+                        }, function (e) {
+                            
+                        });
+
+                    });
+
+
             });
 
 
@@ -214,31 +260,32 @@
                         }
 
                     })
-                          .done(function (resultado) {
-                              localStorage.setItem('CAPA', resultado);
-                              $('.revistas').html(resultado);
-                              //console.log(resultado);
-                              //$(".download").hide();
-                              window.setTimeout(function () {
-                                  $.each($('.download'), function (key, value) {
-                                      //console.log($('.download:eq(' + key + ')').attr('id'));
-                                      //window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dir) { dir.getDirectory($('.download:eq(' + key + ')').attr('id'), { create: false }, function (e) { $('.download:eq(' + key + ')').remove(); }, function (e) { }); });
-                                      window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dir) { dir.getDirectory($('.download:eq(' + key + ')').attr('id'), { create: false }, function (e) { $('.download:eq(' + key + ')').remove(); }, function (e) {  }); });
-                                  });
-                              }, 600);
+                        .done(function (resultado) {
+                            localStorage.setItem('CAPA', resultado);
+                            $('.revistas').html(resultado);
+                            //console.log(resultado);
+                            //$(".download").hide();
+                            window.setTimeout(function () {
+                                $.each($('.download'), function (key, value) {
+                                    //console.log($('.download:eq(' + key + ')').attr('id'));
+                                    //window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dir) { dir.getDirectory($('.download:eq(' + key + ')').attr('id'), { create: false }, function (e) { $('.download:eq(' + key + ')').remove(); }, function (e) { }); });
+                                    //window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dir) { dir.getDirectory($('.download:eq(' + key + ')').attr('id'), { create: false }, function (e) { $('.download:eq(' + key + ')').remove(); }, function (e) {  }); });
+                                    window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dir) { dir.getDirectory($('.download:eq(' + key + ')').attr('id'), { create: false }, function (e) { $('.download:eq(' + key + ')').html('Excluir<br>Download'); $('.download:eq(' + key + ')').addClass('delDownload'); $('.delDownload').removeClass('download'); }, function (e) { }); });
+                                });
+                            }, 600);
 
-                              $('.revistas div.row').hide();
-                              $('.revistas div.row').eq(0).show();
-                              $('.revistas').append('<div class="row text-center" style="margin-bottom:10px"><a href="javascript:mostraEdicoes();">VER TODAS AS EDIÇÕES</a></div>');
-                          })
-                          .fail(function () {
+                            $('.revistas div.row').hide();
+                            $('.revistas div.row').eq(0).show();
+                            $('.revistas').append('<div class="row text-center" style="margin-bottom:10px"><a href="javascript:mostraEdicoes();">VER TODAS AS EDIÇÕES</a></div>');
+                        })
+                        .fail(function () {
 
-                              alert("Por favor verifique sua conexão com a internet e tente novamente.");
-                              //location.href = "login.html";
-                          })
-                          .always(function () {
-                              //alert( "complete" );
-                          });
+                            alert("Por favor verifique sua conexão com a internet e tente novamente.");
+                            //location.href = "login.html";
+                        })
+                        .always(function () {
+                            //alert( "complete" );
+                        });
                 } else {
                     var resultado;
                     resultado = localStorage.getItem('CAPA');
@@ -249,7 +296,8 @@
                         $.each($('.download'), function (key, value) {
                             //console.log($('.download:eq(' + key + ')').attr('id'));
                             //window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dir) { dir.getDirectory($('.download:eq(' + key + ')').attr('id'), { create: false }, function (e) { $('.download:eq(' + key + ')').remove(); }, function (e) { }); });
-                            window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dir) { dir.getDirectory($('.download:eq(' + key + ')').attr('id'), { create: false }, function (e) { $('.download:eq(' + key + ')').remove(); }, function (e) {  }); });
+                            //window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dir) { dir.getDirectory($('.download:eq(' + key + ')').attr('id'), { create: false }, function (e) { $('.download:eq(' + key + ')').remove(); }, function (e) {  }); });
+                            window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dir) { dir.getDirectory($('.download:eq(' + key + ')').attr('id'), { create: false }, function (e) { $('.download:eq(' + key + ')').html('Excluir<br>Download'); $('.download:eq(' + key + ')').addClass('delDownload'); $('.delDownload').removeClass('download'); }, function (e) { }); });
                         });
                         //$('img.center-block').parent.hide();
                         //$('img.center-block').hide();
